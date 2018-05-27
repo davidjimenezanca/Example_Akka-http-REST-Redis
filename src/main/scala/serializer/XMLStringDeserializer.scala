@@ -15,32 +15,23 @@
  */
 package serializer
 
-import akka.util.ByteString
 import com.lucidchart.open.xtract.XmlReader
 import model.News
+import scredis.serialization._
 
 import scala.xml.{Elem, XML}
 
 object XMLStringDeserializer {
 
-/*
+  implicit object NewsReader extends Reader[News] {
+    val utf8StringReader = new StringReader("UTF-8")
 
-  implicit val byteStringFormatter: ByteStringFormatter[News] = new ByteStringFormatter[News] {
-
-    val collectionOfNews: Set[News]
-
-    def deserialize(bs: ByteString): Set[Option[News]] = {
-
-      val listOfNews: List[String] = bs.utf8String.split("</news>").toList
-      listOfNews.map{ elem =>
-         val xml: Elem = XML.loadString(elem.concat("</news>"))
-        XmlReader.of[News].read(xml).toOption
-      }
-    }.toSet
-
-    def deserializeSet(): Unit ={
-
+    override def readImpl(bytes: Array[Byte]): News = {
+      val news: String = utf8StringReader.read(bytes)
+      val xml: Elem = XML.loadString(news)
+      val objectNews: Option[News] = XmlReader.of[News].read(xml).toOption
+      objectNews.getOrElse(News("error", "error"))
     }
   }
-*/
+
 }
