@@ -1,4 +1,4 @@
-name := "akka-http-rest-redis"
+name := "akka-rest.http-rest-redis"
 organization := "dvdancca@gmail.com"
 version := "1.0.0"
 scalaVersion := "2.12.6"
@@ -8,7 +8,7 @@ scalacOptions ++= Seq("-deprecation")
 resolvers += Classpaths.sbtPluginReleases
 
 libraryDependencies ++= {
-  val akkaHttpV = "10.1.1"
+  val akkaHttpV = "10.0.11"
   val scalaTestV = "3.0.4"
   val circeV = "0.9.3"
   val xtractV = "2.0.0"
@@ -20,7 +20,7 @@ libraryDependencies ++= {
     "com.github.scredis" %% "scredis" % scredisV,
 
     // HTTP server
-    //"com.typesafe.akka" %% "akka-http" % akkaHttpV,
+    "com.typesafe.akka" %% "akka-http" % akkaHttpV,
 
     // XML serializer Xtract
     "com.lucidchart" %% "xtract" % xtractV,
@@ -34,8 +34,8 @@ libraryDependencies ++= {
     "de.heikoseeberger" %% "akka-http-circe" % "1.19.0",
 
     // Http client, used currently only for IT test
-    "com.softwaremill.sttp" %% "core" % sttpV % Test,
-    "com.softwaremill.sttp" %% "akka-http-backend" % sttpV % Test,
+    //"com.softwaremill.sttp" %% "core" % sttpV % Test,
+    //"com.softwaremill.sttp" %% "akka-rest-http-backend" % sttpV % Test,
 
     // Redis test
     "junit" % "junit" % jUnitV % Test,
