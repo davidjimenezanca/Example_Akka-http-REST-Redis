@@ -16,29 +16,22 @@
 package redis
 
 import model.News
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
+import org.scalatest.AsyncFlatSpec
 import scredis.Redis
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
 
-@RunWith(classOf[JUnitRunner])
-class Serialization extends FunSuite {
+class Serialization extends AsyncFlatSpec {
 
   import serializer.XMLStringDeserializer._
   lazy val redis = Redis()
   import redis.dispatcher
 
-  test("Serialization of values in Redis-Sets to News case class") {
+  behavior of "XMLStringDeserializer"
+
+  it should "serialize values from Redis-Sets to News case class" in {
     val futureLatest: Future[Set[News]] = redis.sMembers("CNN_latest")
-    futureLatest onComplete {
-      case Success(content) => assert(content.head.isInstanceOf[News])
-      case Failure(e) => fail(s"Empty key 'CNN_latest' or not exists")
-    }
-    Thread.sleep(2000)
-    redis.quit()
+    futureLatest map {content => assert(content.head.isInstanceOf[News])}
   }
 
 }

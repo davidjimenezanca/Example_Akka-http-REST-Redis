@@ -19,10 +19,10 @@ import model.News
 import redis.serializer
 import scredis.Redis
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-class ChannelService {
+class ChannelService(implicit executionContext: ExecutionContext) {
 
   import serializer.XMLStringDeserializer._
   lazy val redis = Redis()
@@ -44,22 +44,22 @@ class ChannelService {
     val allLatest: Future[Set[News]] = redis.sMembers("CNN_latest")
     allLatest onComplete {
       case Success(content) => content
-      case Failure(e) => new Exception(e)
+      case Failure(e) => e
     }
     val allSports: Future[Set[News]] = redis.sMembers("CNN_sports")
     allSports onComplete {
       case Success(content) => content
-      case Failure(e) => new Exception(e)
+      case Failure(e) => e
     }
     val allMoney: Future[Set[News]] = redis.sMembers("CNN_money")
     allMoney onComplete {
       case Success(content) => content
-      case Failure(e) => new Exception(e)
+      case Failure(e) => e
     }
     val allEurope: Future[Set[News]] = redis.sMembers("CNN_europe")
     allEurope onComplete {
       case Success(content) => content
-      case Failure(e) => new Exception(e)
+      case Failure(e) => e
     }
 
     def squashFutures[News](list: Set[Future[Set[News]]]): Future[Set[News]] =

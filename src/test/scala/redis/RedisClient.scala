@@ -15,66 +15,46 @@
  */
 package redis
 
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
+import org.scalatest.AsyncFlatSpec
 import scredis.Redis
 
-import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
-import scala.util.{Failure, Success}
+import scala.concurrent.Future
 
-@RunWith(classOf[JUnitRunner])
-class RedisClient extends FunSuite {
+class RedisClient extends AsyncFlatSpec {
 
   lazy val redis = Redis()
   import redis.dispatcher
 
-  test("Ping to Redis Server: standalone should return pong") {
-    val futurePong: Future[String] = redis.ping()
-    println("Ping sent!")
-    var response = ""
-    futurePong.map(pong => {
-      println("Redis replied with a " + pong)
-    })
-    Await.result(futurePong, 2 seconds)
+  behavior of "Redis()"
+
+  it should "return pong from Redis Server: standalone mode" in {
+    val futureLatest: Future[String] = redis.ping()
+    futureLatest map { content => assert(content.equals("PONG")) }
   }
 
-  test("Redis Set Type with key 'CNN_latest' exists and is not empty") {
+  it should "exists this Redis Set Type with key 'CNN_latest' and is not empty" in {
     val futureLatest: Future[Set[String]] = redis.sMembers("CNN_latest")
-    futureLatest onComplete {
-      case Success(content) => assert(content.nonEmpty)
-      case Failure(e) => fail(s"Empty key 'CNN_latest' or not exists")
-    }
-    Thread.sleep(2000)
+    futureLatest map { content => assert(content.nonEmpty) }
   }
 
-  test("Redis Set Type with key 'CNN_europe' exists and is not empty") {
-    val futureEurope: Future[Set[String]] = redis.sMembers("CNN_europe")
-    futureEurope onComplete {
-      case Success(content) => assert(content.nonEmpty)
-      case Failure(e) => fail(s"Empty key 'CNN_europe' or not exists")
-    }
-    Thread.sleep(2000)
+  it should "not exists this Redis Set Type with key 'CNN'" in {
+    val futureLatest: Future[Set[String]] = redis.sMembers("CNN")
+    futureLatest map { content => assert(content.isEmpty) }
   }
 
-  test("Redis Set Type with key 'CNN_sports' exists and is not empty") {
-    val futureSports: Future[Set[String]] = redis.sMembers("CNN_sports")
-    futureSports onComplete {
-      case Success(content) => assert(content.nonEmpty)
-      case Failure(e) => fail(s"Empty key 'CNN_sports' or not exists")
-    }
-    Thread.sleep(2000)
+  it should "exists this Redis Set Type with key 'CNN_europe' and is not empty" in {
+    val futureLatest: Future[Set[String]] = redis.sMembers("CNN_europe")
+    futureLatest map { content => assert(content.nonEmpty) }
   }
 
-  test("Redis Set Type with key 'CNN_money' exists and is not empty") {
-    val futureMoney: Future[Set[String]] = redis.sMembers("CNN_money")
-    futureMoney onComplete {
-      case Success(content) => assert(content.nonEmpty)
-      case Failure(e) => fail(s"Empty key 'CNN_money' or not exists")
-    }
-    Thread.sleep(2000)
-    redis.quit()
+  it should "exists this Redis Set Type with key 'CNN_sports' and is not empty" in {
+    val futureLatest: Future[Set[String]] = redis.sMembers("CNN_sports")
+    futureLatest map { content => assert(content.nonEmpty) }
+  }
+
+  it should "exists this Redis Set Type with key 'CNN_money' and is not empty" in {
+    val futureLatest: Future[Set[String]] = redis.sMembers("CNN_money")
+    futureLatest map { content => assert(content.nonEmpty) }
   }
 
 }

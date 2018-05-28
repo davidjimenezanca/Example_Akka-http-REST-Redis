@@ -1,4 +1,4 @@
-name := "akka-rest.http-rest-redis"
+name := "akka-rest-http-rest-redis"
 organization := "dvdancca@gmail.com"
 version := "1.0.0"
 scalaVersion := "2.12.6"
@@ -14,13 +14,14 @@ libraryDependencies ++= {
   val xtractV = "2.0.0"
   val sttpV = "1.1.5"
   val scredisV = "2.1.1"
-  val jUnitV = "4.10"
+  val logV = "1.1.3"
   Seq(
     // Reactive client for Redis
     "com.github.scredis" %% "scredis" % scredisV,
 
     // HTTP server
     "com.typesafe.akka" %% "akka-http" % akkaHttpV,
+    "ch.qos.logback" % "logback-classic" % logV % Runtime,
 
     // XML serializer Xtract
     "com.lucidchart" %% "xtract" % xtractV,
@@ -36,9 +37,6 @@ libraryDependencies ++= {
     // Http client, used currently only for IT test
     //"com.softwaremill.sttp" %% "core" % sttpV % Test,
     //"com.softwaremill.sttp" %% "akka-rest-http-backend" % sttpV % Test,
-
-    // Redis test
-    "junit" % "junit" % jUnitV % Test,
 
     "org.scalatest" %% "scalatest" % scalaTestV % Test,
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpV % Test,
