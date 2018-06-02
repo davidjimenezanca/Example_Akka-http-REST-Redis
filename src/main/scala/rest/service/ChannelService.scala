@@ -38,7 +38,6 @@ class ChannelService(implicit executionContext: ExecutionContext) {
   def findByLink(linkToken: String): Future[Set[News]] =
     getAll.map { results => results.collect { case news if news.link.contains(linkToken) => news} }
 
-
   private def getAll: Future[Set[News]] = {
 
     val allLatest: Future[Set[News]] = redis.sMembers("CNN_latest")

@@ -15,7 +15,7 @@
  */
 package rest.http.routes
 
-import akka.http.scaladsl.server.Directives.{complete, get, parameter, pathEndOrSingleSlash, pathPrefix}
+import akka.http.scaladsl.server.Directives._
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.generic.auto._
 import io.circe.syntax._
@@ -29,32 +29,29 @@ class SearchRoutes(
 
   import channelService._
 
-  val route = pathPrefix("rest-cnn-news") {
-    pathPrefix("search"){
+  val routeTree = pathPrefix("rest-cnn-news") {
+    pathPrefix("search") {
       pathPrefix("getAll") {
         pathEndOrSingleSlash {
           get {
             complete(findAll().map(_.asJson))
           }
         }
-      }
-      pathPrefix("linkContains") {
-          get {
-            parameter('link){ link =>
-              complete(findByTitle(link).map(_.asJson))
-            }
-          }
-        }
-      }
+      } ~
       pathPrefix("titleContains") {
-        pathEndOrSingleSlash {
-          get {
-            parameter('title) { title =>
-              complete(findByLink(title).map(_.asJson))
-            }
+        get {
+          parameter('title) { title =>
+            complete(findByTitle(title).map(_.asJson))
           }
         }
-      }
+      } ~
+      pathPrefix("linkContains") {
+        get {
+          parameter('link) { link =>
+            complete(findByLink(link).map(_.asJson))
+          }
+        }
+      } ~
       pathPrefix("searchByChannel") {
         pathEndOrSingleSlash {
           get {
@@ -64,6 +61,7 @@ class SearchRoutes(
           }
         }
       }
+    }
   }
 
 }

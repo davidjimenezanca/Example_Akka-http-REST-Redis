@@ -32,7 +32,7 @@ object Boot extends App {
     val cnnChannelServive = new ChannelService()
     val searchRoutes = new SearchRoutes(cnnChannelServive)
 
-    Http().bindAndHandle(searchRoutes.route, "localhost", 8080)
+    Http().bindAndHandle(searchRoutes.routeTree, "localhost", 8080)
   }
 
   startApplication()
