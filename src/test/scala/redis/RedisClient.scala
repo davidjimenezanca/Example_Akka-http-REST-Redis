@@ -15,14 +15,10 @@
  */
 package redis
 
-import org.scalatest.AsyncFlatSpec
-import scredis.Redis
-
 import scala.concurrent.Future
 
-class RedisClient extends AsyncFlatSpec {
+class RedisClient extends RedisConfig {
 
-  lazy val redis = Redis()
   import redis.dispatcher
 
   behavior of "Redis()"

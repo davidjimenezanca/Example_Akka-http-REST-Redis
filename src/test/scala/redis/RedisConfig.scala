@@ -15,20 +15,13 @@
  */
 package redis
 
-import model.News
+import org.scalatest.{AsyncFlatSpec, BeforeAndAfterAll}
+import scredis.Redis
 
-import scala.concurrent.Future
+class RedisConfig extends AsyncFlatSpec with BeforeAndAfterAll {
 
-class Serialization extends RedisConfig {
+  lazy val redis = Redis()
 
-  import redis.dispatcher
-  import serializer.XMLStringDeserializer._
-
-  behavior of "XMLStringDeserializer"
-
-  it should "serialize values from Redis-Sets to News case class" in {
-    val futureLatest: Future[Set[News]] = redis.sMembers("CNN_latest")
-    futureLatest map {content => assert(content.head.isInstanceOf[News])}
-  }
+  override def afterAll(): Unit = redis.quit()
 
 }

@@ -5,15 +5,15 @@ scalaVersion := "2.12.6"
 
 scalacOptions ++= Seq("-deprecation")
 
-resolvers += Classpaths.sbtPluginReleases
-
 libraryDependencies ++= {
-  val akkaHttpV = "10.0.11"
+  val akkaHttpV = "10.1.1"
+  val akkaActorV = "2.5.12"
+  val akkaStreamsV = "2.5.12"
+  val akkaCirceV = "1.19.0"
   val scalaTestV = "3.0.4"
-  val circeV = "0.9.3"
-  val xtractV = "2.0.0"
-  val sttpV = "1.1.5"
   val scredisV = "2.1.1"
+  val xtractV = "2.0.0"
+  val circeV = "0.9.3"
   val logV = "1.1.3"
   Seq(
     // Reactive client for Redis
@@ -21,6 +21,8 @@ libraryDependencies ++= {
 
     // HTTP server
     "com.typesafe.akka" %% "akka-http" % akkaHttpV,
+    "com.typesafe.akka" %% "akka-actor" % akkaActorV,
+    "com.typesafe.akka" %% "akka-stream" % akkaStreamsV,
     "ch.qos.logback" % "logback-classic" % logV % Runtime,
 
     // XML serializer Xtract
@@ -32,20 +34,10 @@ libraryDependencies ++= {
     "io.circe" %% "circe-parser" % circeV,
 
     // Sugar for serialization and deserialization in akka-http with circe
-    "de.heikoseeberger" %% "akka-http-circe" % "1.19.0",
+    "de.heikoseeberger" %% "akka-http-circe" % akkaCirceV,
 
-    // Http client, used currently only for IT test
-    //"com.softwaremill.sttp" %% "core" % sttpV % Test,
-    //"com.softwaremill.sttp" %% "akka-rest-http-backend" % sttpV % Test,
-
-    "org.scalatest" %% "scalatest" % scalaTestV % Test,
-    "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpV % Test,
-    "org.mockito" % "mockito-all" % "1.9.5" % Test
+    // Scala Test
+    "org.scalatest" %% "scalatest" % scalaTestV % Test
   )
+
 }
-
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.7")
-
-addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.9.3")
-
-addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.6")

@@ -15,12 +15,13 @@
  */
 package rest.http.routes
 
-import akka.http.scaladsl.server.Directives.{complete, get, pathEndOrSingleSlash, pathPrefix}
+import akka.http.scaladsl.server.Directives.{complete, get, parameter, pathEndOrSingleSlash, pathPrefix}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
+import io.circe.generic.auto._
+import io.circe.syntax._
 import rest.service.ChannelService
 
 import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success}
 
 class SearchRoutes(
                     channelService: ChannelService
@@ -28,17 +29,41 @@ class SearchRoutes(
 
   import channelService._
 
-  val route = pathPrefix("rest-cnn-news/search") {
-    pathPrefix("getAll") {
-      pathEndOrSingleSlash {
-        get {
-            complete(findAll onComplete {
-              case Success(content) => content
-              case Failure(ex) => "An error occurs -> " + ex.getStackTrace
-            })
+  val route = pathPrefix("rest-cnn-news") {
+    pathPrefix("search"){
+      pathPrefix("getAll") {
+        pathEndOrSingleSlash {
+          get {
+            complete(findAll().map(_.asJson))
+          }
         }
       }
-    }
+      pathPrefix("linkContains") {
+          get {
+            parameter('link){ link =>
+              complete(findByTitle(link).map(_.asJson))
+            }
+          }
+        }
+      }
+      pathPrefix("titleContains") {
+        pathEndOrSingleSlash {
+          get {
+            parameter('title) { title =>
+              complete(findByLink(title).map(_.asJson))
+            }
+          }
+        }
+      }
+      pathPrefix("searchByChannel") {
+        pathEndOrSingleSlash {
+          get {
+            parameter('channel) { channel =>
+              complete(findByChannel(channel).map(_.asJson))
+            }
+          }
+        }
+      }
   }
 
 }
